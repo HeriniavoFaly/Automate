@@ -23,6 +23,10 @@ int main()
     printf("Veuillez entrer le nom du fichier contenant l'automate a importer(.txt):");
     scanf("%s", fileName);
 
+    // Nettoyer le tampon d'entrée
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+
     // FILE *file = fopen("automate.txt", "r");
 
     FILE *file = fopen(fileName, "r");
