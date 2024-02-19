@@ -15,8 +15,7 @@ digraph{
 	3->6[label="d"]
 	2->6[label="e"]
 	0[fillcolor="webgreen"]
+	4[fillcolor="webgreen"]
 	1[fillcolor="blue"]
 	3[fillcolor="blue"]
-	5[fillcolor="dimgray"]
-	4[fillcolor="dimgray"]
 }

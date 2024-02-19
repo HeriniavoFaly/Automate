@@ -13,17 +13,20 @@
 
 int main()
 {
-    // char fileName[MAX_LEN_FILENAME] = "";
+    char fileName[MAX_LEN_FILENAME] = "";
     Automate nouvAutomate;
     int taille[4] = {0};
     // int taille[3] = {0};
 
     initAutomate(&nouvAutomate, taille);
 
-    // printf("Veuillez entrer le nom du fichier contenant l'automate a importer(.txt):");
-    // scanf("%s", fileName);
+    printf("Veuillez entrer le nom du fichier contenant l'automate a importer(.txt):");
+    scanf("%s", fileName);
 
-    FILE *file = fopen("automate.txt", "r");
+    // FILE *file = fopen("automate.txt", "r");
+
+    FILE *file = fopen(fileName, "r");
+
 
     if(file == NULL){
         printf("On n'a pas pu trouver ce fichier dans le dossier courant. Reessayez.");

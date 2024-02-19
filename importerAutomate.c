@@ -7,7 +7,7 @@ void importerAutomate(Automate* autom, FILE *file, int* taille)
 
     rewind(file);
 
-    fseek(file, 65, SEEK_SET); //Pour sauter l'entête du fichier
+    // fseek(file, 65, SEEK_SET); //Pour sauter l'entête du fichier
 
     //lecture du fichier en stockant les transitions, les états initiaux et les états finaux
     while(!feof(file))
