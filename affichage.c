@@ -62,7 +62,7 @@ void menu(Automate *autom, int *taille)
     while(choix != 'q' && choix != 'Q')
     {
         printf("\nx--------------------------------------------------------------x\n");
-        printf("\n\tMENU:\n\t-afficher automate detaillee(1)\n\t-afficher alphabet(a)\n\t-generer le graphe en.png(g)\n\t-afficher l'accessibilite des etats(x)\n\t-quitter(q)\n");
+        printf("\n\tMENU:\n\t-afficher automate detaillee(1)\n\t-afficher alphabet(a)\n\t-generer le graphe en.png(g)\n\t-afficher l'accessibilite des etats(x)\n\t-Tester si un mot est genere par l'automate(t)\n\t-Tester les mots d'un fichier(f)\n\t-quitter(q)\n");
         printf("\nEntrez votre choix:");
         choix = getchar();
 
@@ -91,12 +91,40 @@ void menu(Automate *autom, int *taille)
                 break;
 
             case 'x':
+            case 'X':
                 printf("\n");
                 for (int i = 0; i < taille[3]; i++)
                 {
                     printf("Etat: %d -- accessible: %d\n", autom->lesEtats[i].number, autom->lesEtats[i].accessible);
                 }
                 printf("\nNB: 1 = accessible, 0 = inaccessible\n");
+                break;
+
+            case 't':
+            case 'T':
+                char mot[] = "";
+                bool isGeneratedBy = false;
+                printf("\n Entrer le mot a tester : ");
+                scanf("%s", mot);
+                while ((getchar())!='\n');
+                
+
+                estIlEngendre(autom, mot, taille, autom->etatInitiaux, taille[1], &isGeneratedBy);
+                // isGeneratedBy =  estEngendre(mot, autom, taille);
+
+                if(isGeneratedBy)
+                    printf("\t\n\n%s est genere par l'automate.\n", mot);
+                else
+                {
+                    // system("cls");
+                    printf("\n\n\t%s n'est pas engendre par l'automate\n", mot);
+                }
+
+                break;
+            
+            case 'f':
+            case 'F':
+                testerMotsDansFichier(autom, taille);
                 break;
 
             default:

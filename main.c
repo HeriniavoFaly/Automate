@@ -16,7 +16,6 @@ int main()
     char fileName[MAX_LEN_FILENAME] = "";
     Automate nouvAutomate;
     int taille[4] = {0};
-    // int taille[3] = {0};
 
     initAutomate(&nouvAutomate, taille);
 

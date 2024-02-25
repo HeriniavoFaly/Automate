@@ -22,6 +22,7 @@ void trouverEtatInaccessible(Automate *autom, int *taille, int *EDep, int taille
         //s'assurer que l'état de départ est parcouru
         modifierEtatCommeAccessible(autom, taille, EDep[i]);
         
+        tailleTabTemp = 0;
         for(int j=0; j<taille[0]; j++)
         {
             /*
