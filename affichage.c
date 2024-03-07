@@ -108,9 +108,14 @@ void menu(Automate *autom, int *taille)
                 scanf("%s", mot);
                 while ((getchar())!='\n');
                 
+                clock_t debut = clock();
 
-                estIlEngendre(autom, mot, taille, autom->etatInitiaux, taille[1], &isGeneratedBy);
-                // isGeneratedBy =  estEngendre(mot, autom, taille);
+                // estIlEngendre(autom, mot, taille, autom->etatInitiaux, taille[1], &isGeneratedBy);
+                isGeneratedBy =  estEngendre(mot, autom, taille);
+
+                clock_t fin = clock();
+
+                printf("Execution time: %lf\n", (double)(fin-debut)/CLOCKS_PER_SEC);
 
                 if(isGeneratedBy)
                     printf("\t\n\n%s est genere par l'automate.\n", mot);
@@ -124,7 +129,13 @@ void menu(Automate *autom, int *taille)
             
             case 'f':
             case 'F':
+                clock_t debut1 = clock();
+
                 testerMotsDansFichier(autom, taille);
+
+                clock_t fin1 = clock();
+
+                printf("Execution time: %.3lf\n", (double)(fin1-debut1)/CLOCKS_PER_SEC);
                 break;
 
             default:

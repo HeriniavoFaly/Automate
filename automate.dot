@@ -17,6 +17,7 @@ digraph{
 	0[fillcolor="webgreen"]
 	1[fillcolor="blue"]
 	3[fillcolor="blue"]
+	6[fillcolor="blue"]
 	5[fillcolor="dimgray"]
 	4[fillcolor="dimgray"]
 }

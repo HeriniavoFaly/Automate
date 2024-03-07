@@ -119,9 +119,6 @@ void ajoutTransition(Automate *automate, Transitions transition, int *taille)
     (*automate).transition[taille[0]-1].E_arrive->number = transition.E_arrive->number;
     strcpy(automate->transition[taille[0]-1].etiquete, transition.etiquete);
 
-    // (*automate).transition[taille[0]-1].E_arrive.number = transition.E_arrive.number;
-    // automate->transition[taille[0]-1].E_depart.number = transition.E_depart.number;
-    // strcpy(automate->transition[taille[0]-1].etiquete, transition.etiquete);
 }
 
 void ajoutEtat(Automate *autom, Transitions transition, int *taille)

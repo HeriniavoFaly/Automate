@@ -99,6 +99,7 @@ void testerMotsDansFichier(Automate *autom,  int *taille)
         fscanf(file, "%s", buffer);
 
         estIlEngendre(autom, buffer, taille, autom->etatInitiaux, taille[1], &isGeneratedBy);
+        // isGeneratedBy =  estEngendre(buffer, autom, taille);
         system("cls");
 
         if(isGeneratedBy)

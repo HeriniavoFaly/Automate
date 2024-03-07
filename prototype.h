@@ -6,6 +6,7 @@
 #include <conio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <time.h>
 
 /* ------------------- CONSTANTES -------------------------*/
 
@@ -64,8 +65,11 @@ void menu(Automate *autom, int *taille);
 void genererDotImg(Automate *autom, int *taille);
 
 /*---------------- estILEngendre.c -------------------*/
-void estIlEngendre(Automate *autom, char *mot, int *taille, int *EDep, int tailleT, bool *isGeneretedBy);
 void testerMotsDansFichier(Automate *autom,  int *taille);
+bool estEngendreRecursif(char* mot, int etatCourant, Automate *autom, int *taille);
+bool estEngendre(char* mot, Automate *autom, int *taille);
+
+// void estIlEngendre(Automate *autom, char *mot, int *taille, int *EDep, int tailleT, bool *isGeneretedBy);
 
 
 #endif
