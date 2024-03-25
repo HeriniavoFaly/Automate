@@ -1,6 +1,6 @@
 #include "prototype.h"
 
-void genererDotImg(Automate *autom, int *taille)
+void genererDotImg(Automate *autom, int *taille, char *graphName)
 {
     //ouverture du fichier
     FILE *file = fopen("automate.dot", "wt");
@@ -15,6 +15,10 @@ void genererDotImg(Automate *autom, int *taille)
     //entete
     fprintf(file, "digraph{\n\tnodesep=\"1.5\"\n\trankdir=LR\n\tnode[shape=circle, fontsize=18 style=filled, fontcolor=white, color=black]\n");
 
+    //Nom du graphe
+
+    fprintf(file, "label=\"%s\"\n", graphName);
+
     //écriture des transitions avec ses étiquettes
     for(int i = 0; i < taille[0]; i++)
     {
@@ -24,13 +28,13 @@ void genererDotImg(Automate *autom, int *taille)
     //écriture de la couleur des états initiaux( green )
     for(int i=0; i< taille[1]; i++)
     {
-        fprintf(file, "\t%d[fillcolor=\"webgreen\"]\n", autom->etatInitiaux[i]);
+        fprintf(file, "\t%d[fillcolor=\"webgreen\", color=\"red\"]\n", autom->etatInitiaux[i]);
     }
 
     //écriture de la couleur des états finaux( blue )
     for(int i=0; i< taille[2]; i++)
     {
-        fprintf(file, "\t%d[fillcolor=\"blue\"]\n", autom->etatFinaux[i]);
+        fprintf(file, "\t%d[fillcolor=\"dodgerblue\"]\n", autom->etatFinaux[i]);
     }
 
     //écriture de la couleur des états inaccessible( gray )
@@ -55,5 +59,4 @@ void genererDotImg(Automate *autom, int *taille)
     }
 
     system("automate.png");
-
 }

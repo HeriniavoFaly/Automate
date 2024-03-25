@@ -17,43 +17,27 @@ void freeMemory(Automate* autom)
     free(autom->alphabet);
     free(autom->lesEtats);
 
-    printf("Liberation memoire avec succes....");
+    // printf("Liberation memoire avec succes....");
 }
 
-int getEtatInitFin(FILE *file, Automate *autom, int isEtatInit) // isEtatInit: =1(si recuperation etat initiaux) ; =0(si récupération états finaux)
+void getEtatInitFin(FILE *file, Automate *autom, int *taille, int isEtatInit) // isEtatInit: =1(si recuperation etat initiaux) ; =0(si récupération états finaux)
 {
-    char curChar = ' ';
-    char temp[2] = "";
-    int nbEtatExistant = 0;
+    char curChar = ' '; // Initilisé à i juste pour entrer au début
+    int etatTemp;
 
     while((curChar = fgetc(file))!= '\n' && !feof(file))
     {
         if(curChar != ' ')
         {
-            temp[0] = curChar;
-            temp[1] = '\0';
+            fseek(file, -1, SEEK_CUR);
+            fscanf(file, "%d", &etatTemp);
 
             if(isEtatInit) // si on est sur le point de lire les états initiaux
-            {
-                (*autom).etatInitiaux = (int*)realloc((*autom).etatInitiaux, (++(nbEtatExistant)) * sizeof(int));
-
-                if((*autom).etatInitiaux == NULL)
-                    exit(EXIT_FAILURE);
-
-                autom->etatInitiaux[nbEtatExistant-1] = atoi(temp);
-            }
+                ajoutEtatInitaux(autom, taille, etatTemp);
             else
-            {
-                (*autom).etatFinaux  = (int*)realloc((*autom).etatFinaux, (++(nbEtatExistant)) * sizeof(int));
-
-                if((*autom).etatFinaux == NULL)
-                    exit(EXIT_FAILURE);
-
-                autom->etatFinaux[nbEtatExistant-1] = atoi(temp);
-            }
-        }
+                ajoutEtatFinaux(autom, taille, etatTemp);    
+        }       
     }
-    return nbEtatExistant;
 }
 
 void ajouterAlphabet(Automate *autom, char *etiquete) // A: alphabet
@@ -90,35 +74,50 @@ void ajouterAlphabet(Automate *autom, char *etiquete) // A: alphabet
 
 void ajoutTransition(Automate *automate, Transitions transition, int *taille)
 {
-    //augmentation de la taille du tableau transition
-    (*automate).transition = (Transitions*)realloc((*automate).transition, (++taille[0])*sizeof(Transitions));
-
-    if((*automate).transition == NULL)
+    if(!isTransitionExits(*automate, taille, transition))
     {
-        printf("Reallocation de la mémoire a echoue...");
-        freeMemory(automate);
-        exit(EXIT_FAILURE);
+        //augmentation de la taille du tableau transition
+        (*automate).transition = (Transitions*)realloc((*automate).transition, (++taille[0])*sizeof(Transitions));
+
+        if((*automate).transition == NULL)
+        {
+            printf("Reallocation de la mémoire a echoue...");
+            freeMemory(automate);
+            exit(EXIT_FAILURE);
+        }
+
+        // printf("Reallocation de la transition fini\n");
+        //allocation des états dans la nouvelle transition
+        automate->transition[taille[0]-1].E_arrive = (Etat*)calloc(1,sizeof(Etat));
+        automate->transition[taille[0]-1].E_depart = (Etat*)calloc(1,sizeof(Etat));
+
+        if((*automate).transition->E_arrive == NULL || (*automate).transition->E_depart == NULL)
+        {
+            printf("Reallocation de la mémoire pour les Etats a echoue... ");
+            freeMemory(automate);
+            exit(EXIT_FAILURE);
+        }
+
+        // printf("Reallocation des Etat de la transition fini\n");
+        //ajout nouveau état s'il n'existe pas
+        ajoutEtat(automate, transition, taille);
+
+        //récupération des numéros des états dans une transition
+        automate->transition[taille[0]-1].E_depart->number = transition.E_depart->number;
+        (*automate).transition[taille[0]-1].E_arrive->number = transition.E_arrive->number;
+        strcpy(automate->transition[taille[0]-1].etiquete, transition.etiquete);
     }
+    // printf("ajout de la transition fini\n");
+}
 
-    //allocation des états dans la nouvelle transition
-    automate->transition[taille[0]-1].E_arrive = (Etat*)calloc(1,sizeof(Etat));
-    automate->transition[taille[0]-1].E_depart = (Etat*)calloc(1,sizeof(Etat));
-
-    if((*automate).transition->E_arrive == NULL || (*automate).transition->E_depart == NULL)
+bool isTransitionExits(Automate autom, int *taille, Transitions transToAdd)
+{
+    for (int i = 0; i < taille[0]; i++)
     {
-        printf("Reallocation de la mémoire pour les Etats a echoue... ");
-        freeMemory(automate);
-        exit(EXIT_FAILURE);
+        if (autom.transition[i].E_depart->number == transToAdd.E_depart->number && autom.transition[i].E_arrive->number == transToAdd.E_arrive->number && strcmp(autom.transition[i].etiquete, transToAdd.etiquete) == 0)
+            return true;       
     }
-
-    //ajout nouveau état s'il existe
-    ajoutEtat(automate, transition, taille);
-
-    //récupération des numéros des états dans une transition
-    automate->transition[taille[0]-1].E_depart->number = transition.E_depart->number;
-    (*automate).transition[taille[0]-1].E_arrive->number = transition.E_arrive->number;
-    strcpy(automate->transition[taille[0]-1].etiquete, transition.etiquete);
-
+    return false;
 }
 
 void ajoutEtat(Automate *autom, Transitions transition, int *taille)
@@ -194,4 +193,89 @@ Etat* getEtat(Automate *autom, int *taille, int number)
         }
 
     }
+}
+
+void ajoutEtatFinaux(Automate *autom, int *taille, int nouvEtatFinal)
+{
+    bool isDiff = true;
+    for (int i = 0; i < taille[2]; i++)
+    {
+        if(autom->etatFinaux[i] == nouvEtatFinal)
+        {
+            isDiff = false;
+            break;
+        }
+    }
+    
+    if(isDiff)
+    {
+        autom->etatFinaux = (int*)realloc(autom->etatFinaux, (++taille[2])*sizeof(int));
+
+        if(autom->etatFinaux != NULL)
+            autom->etatFinaux[taille[2]-1] = nouvEtatFinal;
+    }
+}
+
+bool isFinalState(Automate autom, int *taille, int state)
+{
+    for (int i = 0; i < taille[2]; i++)
+    {
+        if(autom.etatFinaux[i] == state)
+            return true;
+    }
+
+    return false;
+}
+
+void ajoutEtatInitaux(Automate *autom, int *taille, int nouvEtatIniatial)
+{
+    bool isDiff = true;
+    for (int i = 0; i < taille[1]; i++)
+    {
+        if(autom->etatInitiaux[i] == nouvEtatIniatial)
+        {
+            isDiff = false;
+            break;
+        }
+    }
+    
+    if(isDiff)
+    {
+        autom->etatInitiaux = (int*)realloc(autom->etatInitiaux, (++taille[1])*sizeof(int));
+        if(autom->etatInitiaux != NULL)
+            autom->etatInitiaux[taille[1]-1] = nouvEtatIniatial;
+    }
+}
+
+bool isInTab(int *tab, int taille, int value)
+{
+    for (int i = 0; i < taille; i++)
+    {
+        if (tab[i] == value)
+            return true;    
+    }
+
+    return false;    
+}
+
+void copyAutomate(Automate *automDest, int *taille_automDest, Automate automSource, int *taille_automSource)
+{
+    int i;
+    for(i = 0; i< 4; i++)
+        taille_automDest[i] = taille_automSource[i];
+
+    *automDest = automSource;
+}
+
+bool changerAutomate()
+{
+    int choix;
+
+    do
+    {
+        printf("Voulez-vous travailler avec le nouveau automate?(oui=1, non=0)");
+        scanf("%d", &choix); while((getchar() != '\n'));
+    } while (choix != 1 && choix != 0);
+
+    return (choix == 1)? true : false;   
 }

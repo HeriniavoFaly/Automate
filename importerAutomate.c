@@ -20,10 +20,10 @@ void importerAutomate(Automate* autom, FILE *file, int* taille)
         {
             fseek(file, 3, SEEK_CUR); // 3: ce déplacement est nécessaire pour sauter le char '>' et le '\n'
 
-            taille[1] = getEtatInitFin(file, autom, 1); // pour l'ajout des états initiaux
+            getEtatInitFin(file, autom, taille, 1); // pour l'ajout des états initiaux
 
             if (!feof(file))
-                taille[2] = getEtatInitFin(file, autom, 0); //pour l'ajout des états finaux 
+                getEtatInitFin(file, autom, taille, 0); //pour l'ajout des états finaux 
 
         }
         else
@@ -60,4 +60,35 @@ void importerAutomate(Automate* autom, FILE *file, int* taille)
 
     //Vérifier les accessibilités des états et les marquer s'il sont accessible (Etats initiaux toujours accessibles)
     trouverEtatInaccessible(autom, taille, autom->etatInitiaux, taille[1]);       
+}
+
+Automate retourneAutomateImporte(Automate autom, int *taille)
+{
+    char fileName[MAX_LEN_FILENAME] = "";
+
+    initAutomate(&autom, taille);
+
+    printf("Veuillez entrer le nom du fichier contenant l'automate a importer(.txt):");
+    scanf("%s", fileName);
+
+    // Nettoyer le tampon d'entrée
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+
+    // FILE *file = fopen("automate.txt", "r");
+
+    FILE *file = fopen(fileName, "r");
+
+
+    if(file == NULL){
+        printf("On n'a pas pu trouver ce fichier dans le dossier courant. Reessayez.");
+        exit(EXIT_FAILURE);
+    }
+
+    importerAutomate(&autom, file, taille);
+
+    fclose(file);
+    printf("\nAutomate creee \n");
+
+    return autom;
 }

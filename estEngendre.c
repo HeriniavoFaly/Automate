@@ -1,5 +1,6 @@
 #include "prototype.h"
 bool estEngendreRecursif(char* mot, int etatCourant, Automate *autom, int *taille) {
+
     // Verifier si l etat courant est un etat final
     for (int i = 0; i < taille[2]; ++i) {
         if (autom->etatFinaux[i] == etatCourant) {
@@ -14,7 +15,7 @@ bool estEngendreRecursif(char* mot, int etatCourant, Automate *autom, int *taill
     for (int i = 0; i < taille[0]; ++i) {
         if (autom->transition[i].E_depart->number == etatCourant && strchr(autom->transition[i].etiquete, *mot) != NULL) {
             // Appel recursif avec l etat d arrivee et la lettre suivante du mot
-            if (estEngendreRecursif(mot + 1, autom->transition[i].E_arrive->number, autom, taille)) {
+            if (estEngendreRecursif(mot +1, autom->transition[i].E_arrive->number, autom, taille)) {
                 return true;
             }
         }
